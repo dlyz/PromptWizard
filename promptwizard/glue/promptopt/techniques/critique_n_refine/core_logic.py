@@ -69,7 +69,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
         self.iolog.reset_eval_glue(base_path)
 
     @iolog.log_io_params
-    def chat_completion(self, user_prompt: str, system_prompt: str = None):
+    def chat_completion(self, user_prompt: str, system_prompt: str = None, *, is_prod_model: bool = False):
         """
         Make a chat completion request to the OpenAI API.
 
@@ -84,7 +84,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ]
-        response = LLMMgr.chat_completion(messages)
+        response = LLMMgr.chat_completion(messages, is_prod_model=is_prod_model)
         return response
 
     @iolog.log_io_params
@@ -198,7 +198,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
                     instruction=instruction,
                     questions='\n'.join(questions_pool))
                 
-                generated_text = self.chat_completion(solve_prompt)
+                generated_text = self.chat_completion(solve_prompt, is_prod_model=True)
                 critique_example_set = self.evaluate(generated_text, dataset_subset)
                 if not critique_example_set:
                     # If all the questions were answered correctly, then we need to get a new set of questions to answer
@@ -523,7 +523,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
                     instruction=params.base_instruction,
                     answer_format=params.answer_format,
                     questions=example[DatasetSpecificProcessing.QUESTION_LITERAL])
-                generated_text = self.chat_completion(solve_prompt)
+                generated_text = self.chat_completion(solve_prompt, is_prod_model=True)
 
                 examples.extend(self.evaluate(generated_text, [example]))
                 if len(examples) >= params.few_shot_count:
@@ -548,7 +548,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
             train_examples = self.generate_best_examples_zero_shot(params)
             with open("train_synthetic.jsonl", 'w') as file:
                 for record in train_examples:
-                    json.dump(record, file)
+                    json.dump(record, file, ensure_ascii=False)
                     file.write('\n')
 
             print("Synthetic examples saved at train.jsonl....")
