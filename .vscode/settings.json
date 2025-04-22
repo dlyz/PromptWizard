@@ -1,4 +1,5 @@
 {
 	"ruff.enable": false,
-	"files.trimTrailingWhitespace": false
+	"files.trimTrailingWhitespace": false,
+	"makefile.configureOnOpen": false
 }

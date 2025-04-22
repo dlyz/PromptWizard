@@ -8,7 +8,7 @@ import json
 from ....paramlogger import ParamLogger
 from ....paramlogger.constants import LogLiterals
 from ....common.base_classes import SetupConfig, UniversalBaseClass
-from ....common.llm.llm_mgr import LLMMgr
+from ....common.llm.llm_mgr import ChatModelProto
 from ....common.constants.log_strings import CommonLogsStr
 from ...constants import PromptOptimizationParams, SupportedPromptOpt
 from ...techniques.common_logic import DatasetSpecificProcessing, PromptOptimizer
@@ -58,8 +58,9 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
     # This has to defined outside of constructor, so that it can be used as decorator.
     iolog = ParamLogger()
 
-    def __init__(self, dataset: List, base_path: str, setup_config: SetupConfig,
+    def __init__(self, model: ChatModelProto, dataset: List, base_path: str, setup_config: SetupConfig,
                  prompt_pool: CritiqueNRefinePromptPool, data_processor: DatasetSpecificProcessing, logger):
+        self.model = model
         self.dataset = dataset
         self.setup_config = setup_config
         self.data_processor = data_processor
@@ -84,7 +85,7 @@ class CritiqueNRefine(PromptOptimizer, UniversalBaseClass):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ]
-        response = LLMMgr.chat_completion(messages, is_prod_model=is_prod_model)
+        response = self.model(messages, is_prod_model=is_prod_model)
         return response
 
     @iolog.log_io_params

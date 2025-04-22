@@ -48,7 +48,7 @@ def getClientAndModel(suffix=""):
 
 
 # Main logic
-def call_api(messages, *, is_prod_model: bool = False):
+def default_chat_model(messages, *, is_prod_model: bool = False):
     client, model_name = getClientAndModel(suffix=("_PROD" if is_prod_model else ""))
     response = client.chat.completions.create(
         model=model_name,
@@ -63,22 +63,13 @@ def call_api(messages, *, is_prod_model: bool = False):
 class ChatModelProto(Protocol):
     def __call__(self, messages: list[dict], *, is_prod_model: bool = False) -> str: ...
 
-
-_model = call_api
-
-
-def set_model(model: ChatModelProto):
-    global _model
-    _model = model
-
-
-class LLMMgr:
-    @staticmethod
-    def chat_completion(messages: list[dict], *, is_prod_model: bool = False):
-        try:
-            return _model(messages, is_prod_model=is_prod_model)
-        except Exception as e:
-            print(e)
-            return "Sorry, I am not able to understand your query. Please try again."
-            # raise GlueLLMException(f"Exception when calling {llm_handle.__class__.__name__} "
-            #                        f"LLM in chat mode, with message {messages} ", e)
+# class LLMMgr:
+#     @staticmethod
+#     def chat_completion(messages: list[dict], *, is_prod_model: bool = False):
+#         try:
+#             return call_api(messages, is_prod_model=is_prod_model)
+#         except Exception as e:
+#             print(e)
+#             return "Sorry, I am not able to understand your query. Please try again."
+#             # raise GlueLLMException(f"Exception when calling {llm_handle.__class__.__name__} "
+#             #                        f"LLM in chat mode, with message {messages} ", e)
