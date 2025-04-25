@@ -5,7 +5,7 @@ from typing import Any
 
 from ..common.base_classes import LLMConfig, SetupConfig
 from ..common.constants.log_strings import CommonLogsStr
-from ..common.llm.llm_mgr import LLMMgr
+from ..common.llm.llm_mgr import default_chat_model, ChatModelProto
 from ..common.utils.logging import get_glue_logger, set_logging_config
 from ..common.utils.file import read_jsonl, yaml_to_class, yaml_to_dict, read_jsonl_row
 from ..paramlogger import ParamLogger
@@ -36,7 +36,8 @@ class GluePromptOpt:
                  dataset_jsonl: str,
                  data_processor: DatasetSpecificProcessing,
                  dataset_processor_pkl_path: str = None,
-                 prompt_pool_path: str = None):
+                 prompt_pool_path: str = None,
+                 model: ChatModelProto | None = None,):
         """
         Collates all the configs present in different yaml files. Initialize logger, de-serialize pickle file that has
         class/method for dataset processing (for given dataset).
@@ -103,7 +104,8 @@ class GluePromptOpt:
         # This iolog is going to be used when doing complete evaluation over test-dataset
         self.iolog.reset_eval_glue(join(base_path, "evaluation"))
 
-        self.prompt_opt = prompt_opt_cls(training_dataset, base_path, self.setup_config,
+        model = model or default_chat_model
+        self.prompt_opt = prompt_opt_cls(model, training_dataset, base_path, self.setup_config,
                                          self.prompt_pool, self.data_processor, self.logger)
 
     def get_best_prompt(self,use_examples=False,run_without_train_examples=False,generate_synthetic_examples=False) -> (str, Any):

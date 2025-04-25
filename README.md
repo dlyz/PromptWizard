@@ -1,6 +1,12 @@
 
 # PromptWizard 🧙
 
+**❗FORK**:  Added support for custom chat models (llms)
+and for separate models for prompt evaluation and for prompt refinement (both during the optimization)
+
+-------
+
+
 <p align="left">
   <a href='https://arxiv.org/abs/2405.18369'>
     <img src=https://img.shields.io/badge/arXiv-2409.10566-b31b1b.svg>

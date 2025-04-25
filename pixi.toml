@@ -1,0 +1,14 @@
+[workspace]
+channels = ["conda-forge"]
+name = "PromptWizard"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "<=3.12"
+
+
+[pypi-dependencies]
+PromptWizard = { path = ".", editable = true }

@@ -45,7 +45,7 @@ def append_as_jsonl(file_path: str, args_to_log: Dict):
     :param args_to_log:
     :return:
     """
-    json_str = json.dumps(args_to_log, default=str)
+    json_str = json.dumps(args_to_log, default=str, ensure_ascii=False)
     with open(file_path, "a") as fileobj:
         fileobj.write(json_str+"\n")
 
@@ -59,7 +59,7 @@ def save_jsonlist(file_path: str, json_list: List, mode: str = "a"):
     """
     with open(file_path, mode) as file_obj:
         for json_obj in json_list:
-            json_str = json.dumps(json_obj, default=str)
+            json_str = json.dumps(json_obj, default=str, ensure_ascii=False)
             file_obj.write(json_str+"\n")
 
 

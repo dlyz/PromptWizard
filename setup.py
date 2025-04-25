@@ -23,17 +23,10 @@ with open("promptwizard/version.py", "r") as version_file:
     exec(version_file.read(), VERSION)
 
 INSTALL_REQUIRES = [
-    "datasets",
-    "tiktoken",
-    "nltk",
     "openai",
-    "azure-identity",
-    "azure-search-documents",
-    "pyyaml~=6.0.1",
-    "pyarrow==15.0.2",
-    "llama-index==0.11.10",
-    "llama-index-core==0.11.10",
-    "python-dotenv"
+    "pyyaml>=6.0.1",
+    "python-dotenv",
+    "datasets",
 ]
 QUANLITY_REQUIRES = [
     "black==21.4b0",
